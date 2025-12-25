@@ -2,6 +2,8 @@ import { query } from '@/lib/db';
 import { Card } from '@/components/ui/Card';
 import { Calendar, Users, Activity, CheckCircle2 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getStats() {
     const activeEvents = await query(`
     SELECT COUNT(*) as count FROM Events 

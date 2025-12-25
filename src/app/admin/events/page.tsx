@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { deleteEvent } from '../actions';
 
+export const dynamic = 'force-dynamic';
+
 async function getEvents() {
     const result = await query('SELECT * FROM Events ORDER BY ticket_sales_start DESC');
     return result.rows;

@@ -1,6 +1,8 @@
 import { query } from '@/lib/db';
 import UsersClient from './UsersClient';
 
+export const dynamic = 'force-dynamic';
+
 async function getUsers() {
     const result = await query('SELECT * FROM Users ORDER BY id ASC');
     return result.rows;

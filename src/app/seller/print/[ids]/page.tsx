@@ -3,6 +3,8 @@ import QRCode from 'qrcode';
 import { Ticket } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 async function getTickets(idsString: string) {
     // Decode URL-encoded characters (like %2C for comma)
     const decodedIds = decodeURIComponent(idsString);

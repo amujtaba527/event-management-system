@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/Button';
 import { Calendar, ArrowRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getActiveSalesEvents() {
     const result = await query(`
     SELECT * FROM Events 

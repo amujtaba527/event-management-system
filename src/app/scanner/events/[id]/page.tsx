@@ -7,6 +7,8 @@ import { useUser } from '@/context/UserContext';
 import { CheckCircle, AlertTriangle, XCircle, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 export default function ScannerPage({ params }: { params: Promise<{ id: string }> }) {
     const [lastScan, setLastScan] = useState<ScanResult | null>(null);
     const [history, setHistory] = useState<{ name: string, time: string, status: string }[]>([]);

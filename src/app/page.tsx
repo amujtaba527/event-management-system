@@ -10,8 +10,8 @@ export default function LandingPage() {
       {/* Background Effects - tailored for a prestigious/tech vibe */}
       <div className="absolute inset-0 z-0">
         {/* School Color Accents (Assumed Brick/Red + Blue/Intellectual) */}
-        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-red-900/20 rounded-full blur-[120px] animate-pulse-slow" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-slate-800/30 rounded-full blur-[120px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-150 h-150 bg-red-900/20 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-150 h-150 bg-slate-800/30 rounded-full blur-[120px]" />
 
         {/* Subtle Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[60px_60px] mask-[radial-gradient(circle_at_center,black_40%,transparent_100%)]" />

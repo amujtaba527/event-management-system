@@ -3,6 +3,8 @@ import { Card } from '@/components/ui/Card';
 import { ChevronRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getCheckInEvents() {
     const result = await query(`
     SELECT * FROM Events 

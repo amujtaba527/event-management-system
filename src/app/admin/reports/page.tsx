@@ -2,6 +2,8 @@ import { query } from '@/lib/db';
 import { Card } from '@/components/ui/Card';
 import { BarChart3, Users, Calendar, Ticket } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getStats() {
     // Parallelize queries for better performance
     const [eventsRes, inviteesRes, ticketsRes, usersRes] = await Promise.all([

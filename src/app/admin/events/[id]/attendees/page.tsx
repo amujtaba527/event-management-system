@@ -10,6 +10,8 @@ import CsvUploader from '@/components/admin/CsvUploader';
 import DownloadSampleCsv from '@/components/admin/DownloadSampleCsv';
 import AddAttendeeModal from '@/components/admin/AddAttendeeModal';
 
+export const dynamic = 'force-dynamic';
+
 async function getAttendees(eventId: number, search?: string) {
     let sql = 'SELECT * FROM EventInvitees WHERE event_id = $1';
     const params: any[] = [eventId];
