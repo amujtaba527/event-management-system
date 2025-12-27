@@ -1,50 +1,48 @@
-'use client';
-
-import { Button } from '@/components/ui/Button';
+import { getEvent, updateEvent } from '../../../actions';
 import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
-import { createEvent } from '../../actions';
-import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
-export default function CreateEventPage() {
-    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-    const [globalError, setGlobalError] = useState('');
-    const [loading, setLoading] = useState(false);
+export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const event = await getEvent(parseInt(id));
 
-    async function handleSubmit(formData: FormData) {
-        setLoading(true);
-        setFieldErrors({});
-        setGlobalError('');
-
-        try {
-            const res = await createEvent(formData);
-            if (res && !res.success) {
-                if (res.errors) {
-                    setFieldErrors(res.errors);
-                }
-                if (res.message) {
-                    setGlobalError(res.message);
-                }
-                setLoading(false);
-            }
-            // If success, logic inside server action will redirect. 
-            // We don't need to do anything here except maybe ensure loading stays true until redirect happens.
-        } catch (e: any) {
-            setGlobalError(e.message || 'An unexpected error occurred');
-            setLoading(false);
-        }
+    if (!event) {
+        redirect('/admin/events');
     }
 
+    async function handleSubmit(formData: FormData) {
+        'use server';
+        await updateEvent(event.id, formData);
+        redirect('/admin/events');
+    }
+
+    // Helper to format date for input[type="datetime-local"]
+    // PostgreSQL timestamp is ISO-like but might lack T or have offset
+    // Simplest: use toISOString().slice(0, 16) but need to account for timezone if specific.
+    // For now assuming existing values are compatible or standard Date object.
+    const toInputVal = (date: Date) => {
+        if (!date) return '';
+        const d = new Date(date);
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); // Adjust to local
+        return d.toISOString().slice(0, 16);
+    };
+
     return (
-        <div className="space-y-8 max-w-2xl mx-auto animate-fade-in">
-            <div>
-                <Link href="/admin/events" className="text-slate-500 hover:text-slate-900 flex items-center gap-2 mb-4 transition-colors">
-                    <ArrowLeft className="w-4 h-4" /> Back to Events
+        <div className="space-y-8 animate-fade-in max-w-4xl mx-auto">
+            <div className="flex items-center gap-4">
+                <Link href="/admin/events">
+                    <Button variant="ghost" size="icon">
+                        <ArrowLeft className="w-5 h-5 text-slate-500" />
+                    </Button>
                 </Link>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Create New Event</h1>
-                <p className="text-slate-500 mt-2">Set up ticket sales and check-in windows.</p>
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Edit Event</h1>
+                    <p className="text-slate-500 mt-1">Update details for {event.name}</p>
+                </div>
             </div>
 
             <Card className="p-8">
@@ -54,9 +52,8 @@ export default function CreateEventPage() {
                         <Input
                             name="name"
                             label="Event Name"
-                            placeholder="e.g. Annual Sports Day 2024"
+                            defaultValue={event.name}
                             required
-                            error={fieldErrors.name}
                         />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -64,15 +61,15 @@ export default function CreateEventPage() {
                                 type="datetime-local"
                                 name="event_startdate"
                                 label="Event Start"
+                                defaultValue={toInputVal(event.event_startdate)}
                                 required
-                                error={fieldErrors.event_startdate}
                             />
                             <Input
                                 type="datetime-local"
                                 name="event_enddate"
                                 label="Event End"
+                                defaultValue={toInputVal(event.event_enddate)}
                                 required
-                                error={fieldErrors.event_enddate}
                             />
                         </div>
                     </div>
@@ -84,17 +81,15 @@ export default function CreateEventPage() {
                                 type="number"
                                 name="student_price"
                                 label="Student Price (PKR)"
-                                placeholder="0"
+                                defaultValue={event.student_price?.toString() || '0'}
                                 min="0"
-                                error={fieldErrors.student_price}
                             />
                             <Input
                                 type="number"
                                 name="other_price"
                                 label="Guest/Outsider Price (PKR)"
-                                placeholder="0"
+                                defaultValue={event.other_price?.toString() || '0'}
                                 min="0"
-                                error={fieldErrors.other_price}
                             />
                         </div>
                     </div>
@@ -106,29 +101,26 @@ export default function CreateEventPage() {
                                 type="datetime-local"
                                 name="ticket_sales_start"
                                 label="Ticket Sales Start"
+                                defaultValue={toInputVal(event.ticket_sale_start)}
                                 required
-                                error={fieldErrors.ticket_sales_start}
                             />
                             <Input
                                 type="datetime-local"
                                 name="check_in_start"
                                 label="Check-in Start"
+                                defaultValue={toInputVal(event.check_in_start)}
                                 required
-                                error={fieldErrors.check_in_start}
                             />
                         </div>
                     </div>
 
-                    {globalError && (
-                        <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm flex items-center animate-shake">
-                            <span className="mr-2">⚠️</span>
-                            {globalError}
-                        </div>
-                    )}
-
-                    <div className="pt-4">
-                        <Button type="submit" size="lg" className="w-full" isLoading={loading}>
-                            Create Event
+                    <div className="pt-4 flex justify-end gap-3">
+                        <Link href="/admin/events">
+                            <Button variant="ghost" type="button">Cancel</Button>
+                        </Link>
+                        <Button type="submit">
+                            <Save className="w-4 h-4 mr-2" />
+                            Save Changes
                         </Button>
                     </div>
                 </form>

@@ -10,14 +10,12 @@ export type ScanResult =
 export async function validateTicket(ticketId: string, eventId: number, userId: number): Promise<ScanResult> {
     // 1. Fetch ticket
     const res = await query(
-        `SELECT t.*, i.class_name, i.student_identifier 
+        `SELECT t.*, t.attendee_class as class_name, s.roll_number as student_identifier 
      FROM Tickets t
-     LEFT JOIN EventInvitees i ON t.associated_invitee_id = i.id
+     LEFT JOIN Students s ON t.student_id = s.id
      WHERE t.id = $1 AND t.event_id = $2`,
         [ticketId, eventId]
-    ); // UUID check handled by pg driver usually? If validation fails it throws.
-    // Warning: invalid UUID string syntax causes DB error. I should wrap in try/catch or validate UUID format.
-    // pg driver throws error for invalid UUID.
+    );
 
     if (res.rows.length === 0) {
         return { status: 'invalid' };

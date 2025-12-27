@@ -2,11 +2,16 @@
 
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Upload, Loader2 } from 'lucide-react';
-import { uploadAttendees } from '../../app/admin/actions'; // Adjust path as needed
+import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function CsvUploader({ eventId }: { eventId: number }) {
+interface CsvUploaderProps {
+    action: (formData: FormData) => Promise<any>;
+    buttonText?: string;
+    onSuccess?: () => void;
+}
+
+export default function CsvUploader({ action, buttonText = "Import CSV", onSuccess }: CsvUploaderProps) {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
@@ -20,9 +25,16 @@ export default function CsvUploader({ eventId }: { eventId: number }) {
         formData.append('file', file);
 
         try {
-            await uploadAttendees(eventId, formData);
-            router.refresh(); // Refresh server data
-            // Reset input
+            const res = await action(formData);
+            if (res && res.success === false) {
+                alert(res.message);
+            } else {
+                router.refresh();
+                if (onSuccess) onSuccess();
+                // If the action returned a message, maybe show it?
+                if (res && res.message) alert(res.message);
+            }
+
             if (fileInputRef.current) fileInputRef.current.value = '';
         } catch (error) {
             console.error('Upload failed:', error);
@@ -48,7 +60,7 @@ export default function CsvUploader({ eventId }: { eventId: number }) {
                 isLoading={uploading}
             >
                 <Upload className="w-4 h-4 mr-2" />
-                {uploading ? 'Importing...' : 'Import CSV'}
+                {uploading ? 'Importing...' : buttonText}
             </Button>
         </div>
     );

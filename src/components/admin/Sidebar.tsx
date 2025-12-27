@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Calendar, Users, BarChart3, LogOut, Ticket, ScanLine, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, BarChart3, LogOut, Ticket, ScanLine, ExternalLink, GraduationCap } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
 const items = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
     { label: 'Events', icon: Calendar, href: '/admin/events' },
+    { label: 'Students', icon: GraduationCap, href: '/admin/students' },
     { label: 'Users', icon: Users, href: '/admin/users' },
     { label: 'Reports', icon: BarChart3, href: '/admin/reports' },
 ];

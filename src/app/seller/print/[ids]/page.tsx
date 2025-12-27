@@ -17,12 +17,12 @@ async function getTickets(idsString: string) {
         `SELECT 
             t.id,
             e.name as event_name,
-            ei.name as attendee_name,
-            ei.class_name,
+            t.attendee_name,
+            t.attendee_class as class_name,
+            t.attendee_type,
             t.created_at
          FROM Tickets t
          JOIN Events e ON t.event_id = e.id
-         JOIN EventInvitees ei ON t.associated_invitee_id = ei.id
          WHERE t.id = ANY($1)`,
         [ids]
     );

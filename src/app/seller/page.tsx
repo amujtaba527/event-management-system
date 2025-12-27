@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 async function getActiveSalesEvents() {
     const result = await query(`
     SELECT * FROM Events 
-    WHERE NOW() BETWEEN ticket_sales_start AND ticket_sales_end
-    ORDER BY ticket_sales_end ASC
+    WHERE NOW() >= ticket_sale_start AND NOW() < event_enddate
+    ORDER BY ticket_sale_start ASC
   `);
     return result.rows;
 }
@@ -51,9 +51,9 @@ export default async function SellerDashboard() {
                                 <div>
                                     <h3 className="text-xl font-bold text-slate-900 mb-1">{event.name}</h3>
                                     <p className="text-sm text-slate-500">
-                                        Sales close: {new Date(event.ticket_sales_end).toLocaleDateString()}
+                                        Event Ends: {new Date(event.event_enddate).toLocaleDateString()}
                                         <br />
-                                        {new Date(event.ticket_sales_end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {new Date(event.event_enddate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 </div>
 

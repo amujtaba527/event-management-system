@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 async function getStats() {
     const activeEvents = await query(`
     SELECT COUNT(*) as count FROM Events 
-    WHERE ticket_sales_end > NOW()
+    WHERE event_enddate > NOW()
   `);
 
     const totalStaff = await query(`
@@ -94,7 +94,7 @@ export default async function AdminDashboard() {
                             <thead className="bg-slate-50 text-slate-500 font-medium">
                                 <tr>
                                     <th className="px-6 py-4">Event Name</th>
-                                    <th className="px-6 py-4">Sales End</th>
+                                    <th className="px-6 py-4">Event End</th>
                                     <th className="px-6 py-4">Check-in Start</th>
                                 </tr>
                             </thead>
@@ -110,7 +110,7 @@ export default async function AdminDashboard() {
                                         <tr key={event.id} className="hover:bg-slate-50/50 transition-colors">
                                             <td className="px-6 py-4 font-medium text-slate-900">{event.name}</td>
                                             <td className="px-6 py-4 text-slate-600">
-                                                {new Date(event.ticket_sales_end).toLocaleDateString()}
+                                                {new Date(event.event_enddate).toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 text-slate-600">
                                                 {new Date(event.check_in_start).toLocaleDateString()}

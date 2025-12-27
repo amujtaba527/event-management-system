@@ -9,7 +9,7 @@ import { deleteEvent } from '../actions';
 export const dynamic = 'force-dynamic';
 
 async function getEvents() {
-    const result = await query('SELECT * FROM Events ORDER BY ticket_sales_start DESC');
+    const result = await query('SELECT * FROM Events ORDER BY ticket_sale_start DESC');
     return result.rows;
 }
 
@@ -43,21 +43,22 @@ export default async function EventsPage() {
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-3">
                                         <h3 className="text-xl font-bold text-slate-900">{event.name}</h3>
-                                        <Badge variant={new Date(event.ticket_sales_end) > new Date() ? 'success' : 'secondary'}>
-                                            {new Date(event.ticket_sales_end) > new Date() ? 'Sales Open' : 'Sales Closed'}
+                                        <Badge variant={new Date(event.event_enddate) > new Date() ? 'success' : 'secondary'}>
+                                            {new Date(event.event_enddate) > new Date() ? 'Active' : 'Past'}
                                         </Badge>
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 text-sm text-slate-600">
-                                        <p>Sales: {new Date(event.ticket_sales_start).toLocaleDateString()} - {new Date(event.ticket_sales_end).toLocaleDateString()}</p>
-                                        <p>Check-in: {new Date(event.check_in_start).toLocaleDateString()} - {new Date(event.check_in_end).toLocaleDateString()}</p>
+                                        <p>Event: {new Date(event.event_startdate).toLocaleDateString()} - {new Date(event.event_enddate).toLocaleDateString()}</p>
+                                        <p>Sales Start: {new Date(event.ticket_sale_start).toLocaleDateString()}</p>
+                                        <p>Check-in Start: {new Date(event.check_in_start).toLocaleDateString()}</p>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <Link href={`/admin/events/${event.id}/attendees`}>
+                                    <Link href={`/admin/events/${event.id}/edit`}>
                                         <Button variant="outline" size="sm">
-                                            <Users className="w-4 h-4 mr-2" />
-                                            Attendees
+                                            <Pencil className="w-4 h-4 mr-2" />
+                                            Edit
                                         </Button>
                                     </Link>
                                     <form action={async () => {
